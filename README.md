@@ -13,7 +13,7 @@ Access the datasets via the links below:
 
 ## Videos
 
-[![EESA 1 House01-1-2-08-KI](https://youtu.be/3SqdmiUk0OE/maxresdefault.jpg)](https://youtu.be/3SqdmiUk0OE)
+[![EESA 1 House01-1-2-08-KI](https://img.youtube.com/vi/3SqdmiUk0OE/maxresdefault.jpg)](https://youtu.be/3SqdmiUk0OE)
 
 
 ## Other links that may help
