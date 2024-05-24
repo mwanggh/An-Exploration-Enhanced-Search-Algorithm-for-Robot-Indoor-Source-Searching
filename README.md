@@ -22,12 +22,12 @@ Access the datasets via the links below:
 
 ## Other links that may help
 
-- [RobotAtVirtualHome.](https://github.com/DavidFernandezChaves/RobotAtVirtualHome)
-- [OpenFOAM.](https://openfoam.org/)
-- [GADEN.](https://github.com/MAPIRlab/gaden)
-- [ROS.](https://www.ros.org/)
-- [Gazebo.](https://gazebosim.org/home)
-- [TurtleBot3.](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/)
+- [RobotAtVirtualHome](https://github.com/DavidFernandezChaves/RobotAtVirtualHome)
+- [OpenFOAM](https://openfoam.org/)
+- [GADEN](https://github.com/MAPIRlab/gaden)
+- [ROS](https://www.ros.org/)
+- [Gazebo](https://gazebosim.org/home)
+- [TurtleBot3](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/)
 
 ## Cite this paper
 
