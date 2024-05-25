@@ -4,6 +4,8 @@
 
 The source code will be uploaded after the paper is accepted.
 
+Robot simulations were conducted using the [Gazebo](https://gazebosim.org/home) simulation environment on the [ROS](https://www.ros.org/) platform. The source search is performed by the [TurtleBot3](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/) Burger robot, equipped with a single-line lidar, MOX concentration sensor, and anemometer.
+
 ## Dataset
 
 Access the datasets via the links below:
@@ -18,13 +20,6 @@ Access the datasets via the links below:
 - [3 House14-1-3-04-KI](https://youtu.be/8pUgce2rRew)
 - [4 Scenario 1](https://youtu.be/WWvrSr8OD-Q)
 - [5 Scenario 4](https://youtu.be/82lw_Nb8ELA)
-
-
-## Other links that may help
-
-- [ROS](https://www.ros.org/)
-- [Gazebo](https://gazebosim.org/home)
-- [TurtleBot3](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/)
 
 ## Cite this paper
 
