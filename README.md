@@ -8,16 +8,16 @@ The source code will be uploaded after the paper is accepted.
 
 Access the datasets via the links below:
 - [CAD files.](https://huggingface.co/datasets/WangHaaa/SourceSearchingDatasetCAD)
-- [Computational fluid dynamics data using OpenFOAM.](https://huggingface.co/datasets/WangHaaa/SourceSearchingDatasetFOAM)
-- [Source diffusion simulation data using GADEN.](https://huggingface.co/datasets/WangHaaa/SourceSearchingDatasetGADEN)
+- [CFD data.](https://huggingface.co/datasets/WangHaaa/SourceSearchingDatasetFOAM)
+- [Source diffusion simulation data.](https://huggingface.co/datasets/WangHaaa/SourceSearchingDatasetGADEN)
 
 ## Videos
 
-- [EESA 1 House01-1-2-08-KI](https://youtu.be/3SqdmiUk0OE)
-- [EESA 2 House01-1-2-08-BO](https://youtu.be/NEAkdBrY6AU)
-- [EESA 3 House14-1-3-04-KI](https://youtu.be/8pUgce2rRew)
-- [EESA 4 Scenario 1](https://youtu.be/WWvrSr8OD-Q)
-- [EESA 5 Scenario 4](https://youtu.be/82lw_Nb8ELA)
+- [1 House01-1-2-08-KI](https://youtu.be/3SqdmiUk0OE)
+- [2 House01-1-2-08-BO](https://youtu.be/NEAkdBrY6AU)
+- [3 House14-1-3-04-KI](https://youtu.be/8pUgce2rRew)
+- [4 Scenario 1](https://youtu.be/WWvrSr8OD-Q)
+- [5 Scenario 4](https://youtu.be/82lw_Nb8ELA)
 
 
 ## Other links that may help
