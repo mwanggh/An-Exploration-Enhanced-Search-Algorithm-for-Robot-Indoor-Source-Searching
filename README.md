@@ -7,9 +7,9 @@ The source code will be uploaded after the paper is accepted.
 ## Dataset
 
 Access the datasets via the links below:
-- [CAD files.](https://huggingface.co/datasets/WangHaaa/SourceSearchingDatasetCAD)
-- [CFD data.](https://huggingface.co/datasets/WangHaaa/SourceSearchingDatasetFOAM)
-- [Source diffusion simulation data.](https://huggingface.co/datasets/WangHaaa/SourceSearchingDatasetGADEN)
+- [CAD files.](https://huggingface.co/datasets/WangHaaa/SourceSearchingDatasetCAD) The 3D models used in this dataset were created by the [RobotAtVirtualHome](https://github.com/DavidFernandezChaves/RobotAtVirtualHome) project. The 3D models are transformed into CAD models.
+- [CFD data.](https://huggingface.co/datasets/WangHaaa/SourceSearchingDatasetFOAM) CFD simulations were conducted using the [OpenFOAM](https://openfoam.org/) 11 software. The solver used is the simpleFOAM solver, and the model used is the $k-\epsilon$ model.
+- [Source diffusion simulation data.](https://huggingface.co/datasets/WangHaaa/SourceSearchingDatasetGADEN) The diffusion of substances throughout the environment is simulated using [GADEN](https://github.com/MAPIRlab/gaden).
 
 ## Videos
 
@@ -22,9 +22,6 @@ Access the datasets via the links below:
 
 ## Other links that may help
 
-- [RobotAtVirtualHome](https://github.com/DavidFernandezChaves/RobotAtVirtualHome)
-- [OpenFOAM](https://openfoam.org/)
-- [GADEN](https://github.com/MAPIRlab/gaden)
 - [ROS](https://www.ros.org/)
 - [Gazebo](https://gazebosim.org/home)
 - [TurtleBot3](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/)
