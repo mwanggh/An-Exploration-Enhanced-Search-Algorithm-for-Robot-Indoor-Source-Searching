@@ -1,4 +1,4 @@
-# An-Exploration-Enhanced-Search-Algorithm-for-Robot-Indoor-Source-Searching
+# An Exploration-Enhanced Search Algorithm for Robot Indoor Source Searching
 
 ## Source code
 
