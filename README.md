@@ -2,13 +2,13 @@
 
 ## Source code
 
-The source code will be uploaded after the paper is accepted.
+*The source code will be uploaded after the paper is accepted.*
+
+Robot simulations were conducted using the [Gazebo](https://gazebosim.org/home) simulation environment on the [ROS](https://www.ros.org/) platform. The source search is performed by the [TurtleBot3](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/) Burger robot, equipped with a single-line lidar, MOX concentration sensor, and anemometer. The ROS version is [Noetic](https://wiki.ros.org/noetic).
 
 1. Download the source code and put it in `~/catkin_ws/src`.
 2. Run `catkin_make` in `~/catkin_ws`.
 3. Launch the launch file.
-
-Robot simulations were conducted using the [Gazebo](https://gazebosim.org/home) simulation environment on the [ROS](https://www.ros.org/) platform. The source search is performed by the [TurtleBot3](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/) Burger robot, equipped with a single-line lidar, MOX concentration sensor, and anemometer. The ROS version is [Noetic](https://wiki.ros.org/noetic).
 
 ## Dataset
 
@@ -28,4 +28,4 @@ The case names are formatted as HouseX1-X2-X3-X4-X5X6, where X1 represents the h
 
 ## Cite this paper
 
-Paper information will be updated after the paper is accepted.
+*Paper information will be updated after the paper is accepted.*
