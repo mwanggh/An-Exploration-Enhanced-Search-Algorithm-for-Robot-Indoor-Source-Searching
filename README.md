@@ -8,7 +8,7 @@ Robot simulations were conducted using the [Gazebo](https://gazebosim.org/home) 
 
 ## Dataset
 
-The case names are formatted as House$X_1$-$X_2$-$X_3$-$X_4$-$X_5 X_6$, where $ X_1 $ represents the house number, $ X_2 $ represents the airflow inlets, $ X_3 $ represents the airflow outlets, $ X_4 $ represents the airflow speed, $ X_5 $ represents the space where the source is located (B for Bathroom or K for Kitchen), and $ X_6 $ indicates whether the source is in the airflow (I for In or O for Out). For example, House16-13-2-04-KI signifies the scenario in House16 with airflow inlets 1 and 3, airflow outlet 2, airflow speed of 0.4 m/s, and a source located in the kitchen within the airflow.
+The case names are formatted as HouseX1-X2-X3-X4-X5X6, where X1 represents the house number, X2 represents the airflow inlets, X3 represents the airflow outlets, X4 represents the airflow speed, X5 represents the space where the source is located (B for Bathroom or K for Kitchen), and X6 indicates whether the source is in the airflow (I for In or O for Out). For example, House16-13-2-04-KI signifies the scenario in House16 with airflow inlets 1 and 3, airflow outlet 2, airflow speed of 0.4 m/s, and a source located in the kitchen within the airflow.
 
 - [CAD files.](https://huggingface.co/datasets/WangHaaa/SourceSearchingDatasetCAD) The 3D models were created by the [RobotAtVirtualHome](https://github.com/DavidFernandezChaves/RobotAtVirtualHome) project and converted into CAD models.
 - [CFD data.](https://huggingface.co/datasets/WangHaaa/SourceSearchingDatasetCFD) CFD simulations were conducted using the [OpenFOAM](https://openfoam.org/) 11 software. The solver used is the simpleFOAM solver, and the model used is the $k-\epsilon$ model.
