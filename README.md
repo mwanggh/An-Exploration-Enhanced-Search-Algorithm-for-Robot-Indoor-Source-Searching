@@ -8,7 +8,7 @@ Robot simulations were conducted using the [Gazebo](https://gazebosim.org/home) 
 
 1. Download the source code and put it in `~/catkin_ws/src`.
 2. Run `catkin_make` in `~/catkin_ws`.
-3. Launch the launch file.
+3. Run the launch file.
 
 ## Dataset
 
