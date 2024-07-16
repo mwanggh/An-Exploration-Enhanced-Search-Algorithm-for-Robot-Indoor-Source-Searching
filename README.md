@@ -20,12 +20,12 @@ The case names are formatted as HouseX1-X2-X3-X4-X5X6, where X1 represents the h
 
 ## Videos
 
-1. [House01-1-2-08-KI](https://youtu.be/3SqdmiUk0OE)
-1. [House01-1-2-08-BO](https://youtu.be/NEAkdBrY6AU)
-1. [House07-1-3-08-KI](https://youtu.be/dj1Pnsd4msM)
-1. [House14-1-3-04-KI](https://youtu.be/8pUgce2rRew)
-1. [Scenario 1](https://youtu.be/WWvrSr8OD-Q)
-1. [Scenario 4](https://youtu.be/82lw_Nb8ELA)
+- [House01-1-2-08-KI](https://youtu.be/3SqdmiUk0OE)
+- [House01-1-2-08-BO](https://youtu.be/NEAkdBrY6AU)
+- [House07-1-3-08-KI](https://youtu.be/dj1Pnsd4msM)
+- [House14-1-3-04-KI](https://youtu.be/8pUgce2rRew)
+- [Scenario 1](https://youtu.be/WWvrSr8OD-Q)
+- [Scenario 4](https://youtu.be/82lw_Nb8ELA)
 
 ## Cite this paper
 
