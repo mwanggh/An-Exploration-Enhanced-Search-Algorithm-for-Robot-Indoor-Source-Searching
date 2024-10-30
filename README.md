@@ -1,5 +1,7 @@
 # An Exploration-Enhanced Search Algorithm for Robot Indoor Source Searching
 
+[View Paper](https://ieeexplore.ieee.org/document/10665938)
+
 ## Source code
 
 *The source code will be uploaded after the paper is accepted.*
