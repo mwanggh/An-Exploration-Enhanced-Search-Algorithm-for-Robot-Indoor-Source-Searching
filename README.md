@@ -32,14 +32,11 @@ The case names are formatted as HouseX1-X2-X3-X4-X5X6, where X1 represents the h
 ## Cite this paper
 
 ```
-@ARTICLE{10665938,
+@article{wang2024exploration,
+  title={An Exploration-Enhanced Search Algorithm for Robot Indoor Source Searching},
   author={Wang, Miao and Xin, Bin and Jing, Mengjie and Qu, Yun},
-  journal={IEEE Transactions on Robotics}, 
-  title={An Exploration-Enhanced Search Algorithm for Robot Indoor Source Searching}, 
+  journal={IEEE Transactions on Robotics},
   year={2024},
-  volume={40},
-  number={},
-  pages={4160-4178},
-  keywords={Robots;Robot sensing systems;Indoor environment;Sensors;Search problems;Dispersion;Computational modeling;Frontier-based exploration;indoor;rapidly-exploring random trees (RRTs);robot;source searching},
-  doi={10.1109/TRO.2024.3454572}}
+  publisher={IEEE}
+}
 ```
