@@ -22,10 +22,10 @@ The case names are formatted as HouseX1-X2-X3-X4-X5X6, where X1 represents the h
 
 ## Videos
 
-- [House01-1-2-08-KI](https://youtu.be/IIh54fCSpMQ)
-- [House01-1-2-08-BO](https://youtu.be/_lX9yu22AiU)
-- [House07-1-3-08-KI](https://youtu.be/vkH--xWRIqw)
-- [House14-1-3-04-KI](https://youtu.be/fFt_5qDy7Kg)
+- [House01-1-2-08-KI](https://youtu.be/zXVaouayGMA)
+- [House01-1-2-08-BO](https://youtu.be/b7bXw0T3Oj8)
+- [House07-1-3-08-KI](https://youtu.be/l2h5XbsGqTg)
+- [House14-1-3-04-KI](https://youtu.be/87Sldf0MPOE)
 - [Scenario 1](https://youtu.be/WWvrSr8OD-Q)
 - [Scenario 4](https://youtu.be/82lw_Nb8ELA)
 
