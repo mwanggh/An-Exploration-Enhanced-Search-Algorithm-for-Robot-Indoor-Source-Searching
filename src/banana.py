@@ -221,22 +221,20 @@ class Banana():
     def probability(self, x, y):
         # source lcoation estimator
         # Eq. (2)
-        qs = 4.0
+        kQ = 4.0
         D = 1.0
         tau = 250
         V = self.rc.wind_speed
-        lam = math.sqrt(D * tau / (1 + V**2 * tau / 4 / D))
-        wind_dir = self.rc.yaw - self.rc.wind_direction if self.gas_hit else self.rc.yaw - self.rc.wind_direction + math.pi
-        pp = math.atan2(y - self.rc.y, x - self.rc.x) - wind_dir
+        phi = self.rc.yaw - self.rc.wind_direction if self.gas_hit else self.rc.yaw - self.rc.wind_direction + math.pi
+        lam = math.sqrt(D * tau / (1 + V**2 * tau / (4 * D)))
         dis = math.sqrt(abs(x - self.rc.x)**2 + abs(y - self.rc.y)**2)
-        dx = dis * math.cos(pp)
-        dy = dis * math.sin(pp)
+        dx = self.rc.x - x
+        dy = self.rc.y - y
         
-        phi = math.pi
-        pa = qs / 4 / math.pi / D # / (dis + 2.0)
+        pa = kQ / (4 * math.pi * D )
         pb = math.exp(-dis / lam)
-        pc = math.exp(-dx * V * math.cos(phi) / 2 / D)
-        pd = math.exp(-dy * V * math.sin(phi) / 2 / D)
+        pc = math.exp(-dx * V * math.cos(phi) / (2 * D))
+        pd = math.exp(-dy * V * math.sin(phi) / (2 * D))
         p = pa * pb * pc * pd
         return p
     
