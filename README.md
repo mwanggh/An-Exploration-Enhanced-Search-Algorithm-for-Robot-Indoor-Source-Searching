@@ -6,15 +6,11 @@
 
 Robot simulations were conducted using the [Gazebo](https://gazebosim.org/home) simulation environment on the [ROS](https://www.ros.org/) platform. The source search is performed by the [TurtleBot3](https://emanual.robotis.com/docs/en/platform/turtlebot3/overview/) Burger robot, equipped with a single-line lidar, MOX concentration sensor, and anemometer. The ROS version is [Noetic](https://wiki.ros.org/noetic).
 
-1. Download the source code and put it in `~/catkin_ws/src`.
-2. Run `catkin_make` in `~/catkin_ws`.
-3. Run the launch file.
-
 ## Dataset
 
 - [CAD files.](https://huggingface.co/datasets/WangHaaa/SourceSearchingDatasetCAD) The 3D models were created by the [RobotAtVirtualHome](https://github.com/DavidFernandezChaves/RobotAtVirtualHome) project and converted into CAD models.
 - [CFD data.](https://huggingface.co/datasets/WangHaaa/SourceSearchingDatasetCFD) CFD simulations were conducted using the [OpenFOAM](https://openfoam.org/) 11 software.
-- [Source diffusion simulation data.](https://huggingface.co/datasets/WangHaaa/SourceSearchingDatasetGADEN) The diffusion of substances throughout the environment is simulated using [GADEN](https://github.com/MAPIRlab/gaden).
+- [Dispersion data.](https://huggingface.co/datasets/WangHaaa/SourceSearchingDatasetGADEN) The diffusion of substances throughout the environment is simulated using [GADEN](https://github.com/MAPIRlab/gaden).
 ## Videos
 
 - [House01-1-2-08-KI](https://youtu.be/zXVaouayGMA)
@@ -28,10 +24,12 @@ Robot simulations were conducted using the [Gazebo](https://gazebosim.org/home) 
 
 ```
 @article{wang2024exploration,
-  title={An Exploration-Enhanced Search Algorithm for Robot Indoor Source Searching},
   author={Wang, Miao and Xin, Bin and Jing, Mengjie and Qu, Yun},
-  journal={IEEE Transactions on Robotics},
+  journal={IEEE Transactions on Robotics}, 
+  title={An Exploration-Enhanced Search Algorithm for Robot Indoor Source Searching}, 
   year={2024},
-  publisher={IEEE}
+  volume={40},
+  pages={4160-4178},
+  doi={10.1109/TRO.2024.3454572}
 }
 ```
