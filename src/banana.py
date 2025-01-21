@@ -237,7 +237,8 @@ class Banana():
         dx = self.rc.x - x
         dy = self.rc.y - y
         
-        pa = kQ / (4 * math.pi * D )
+        # pa = kQ / (4 * math.pi * D * dis)
+        pa = kQ / (4 * math.pi * D) # Modify the rrt_min_r parameter or use this if you don't want the navigation goal to be too close to the robot
         pb = math.exp(-dis / lam)
         pc = math.exp(-dx * V * math.cos(phi) / (2 * D))
         pd = math.exp(-dy * V * math.sin(phi) / (2 * D))
