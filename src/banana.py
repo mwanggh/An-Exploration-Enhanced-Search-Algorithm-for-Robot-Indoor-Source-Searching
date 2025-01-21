@@ -36,14 +36,15 @@ class Frontier():
         obs_r = round(self.obs_r / map_client.resolution)
         frontiers:List[Frontier_Node] = []
         q = []
-        visited = [[False for _ in range(map_client.height)] for _ in range(map_client.width)]
+        # visited = [[False for _ in range(map_client.height)] for _ in range(map_client.width)]
+        visited = np.full((map_client.width, map_client.height), False, dtype=bool)
         
         dx = [0, 1, 0, -1]
         dy = [1, 0, -1, 0]
         
         sx, sy = map_client.get_costmap_x_y(mx, my)
         q.append((sx, sy))
-        visited[sx][sy] = True
+        visited[sx, sy] = True
         
         while not len(q) == 0:
             node = q.pop(0)
@@ -63,8 +64,8 @@ class Frontier():
                 nx, ny = node[0] + dx[i], node[1] + dy[i]
                 if nx < 0 or nx >= map_client.width or ny < 0 or ny >= map_client.height:
                     continue
-                if not visited[nx][ny]:
-                    visited[nx][ny] = True
+                if not visited[nx, ny]:
+                    visited[nx, ny] = True
                     if map_client.get_cost_from_costmap_x_y(nx, ny) == self.UNKNOWN:
                         frontiers.append(Frontier_Node(node[0], node[1]))
                     elif map_client.get_cost_from_costmap_x_y(nx, ny) == self.FREE:
