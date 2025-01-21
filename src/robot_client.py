@@ -6,7 +6,7 @@ from nav_msgs.msg import Odometry
 from nav_msgs.srv import GetPlan, GetPlanRequest, GetPlanResponse
 import tf
 import copy
-from olfaction_msgs.msg import anemometer as Anemoter
+from olfaction_msgs.msg import anemometer as Anemometer
 from olfaction_msgs.msg import gas_sensor as GasSensor
 import actionlib
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
@@ -32,7 +32,7 @@ class RobotClient():
         self.real_y = None
         self.real_z = None
         self.real_yaw = None
-        self.raw_anemoter = []
+        self.raw_anemometer = []
         self.wind_direction = None
         self.wind_speed = None
         self.raw_gas = []
@@ -55,19 +55,19 @@ class RobotClient():
         # init robot_real_pose subscriber
         self.real_pose_sub = rospy.Subscriber(self.robot_real_pose_topic, Odometry, self.real_pose_cb, queue_size=50)
         while self.raw_real_pose is None and not rospy.is_shutdown():
-            rospy.loginfo(f'Waiting for {str(self.real_pose_sub.resolved_name)}')
+            rospy.loginfo(f'Waiting for {self.robot_real_pose_topic}')
             rospy.sleep(0.1)
             
-        # init anemoter sub
-        self.anemoter_sub = rospy.Subscriber(self.anemometer_topic, Anemoter, self.anemoter_cb, queue_size=10)
-        while self.raw_anemoter is None and not rospy.is_shutdown():
-            rospy.loginfo(f'Waiting for {str(self.anemometer_topic.resolved_name)}')
+        # init anemometer sub
+        self.anemometer_sub = rospy.Subscriber(self.anemometer_topic, Anemometer, self.anemometer_cb, queue_size=10)
+        while len(self.raw_anemometer) == 0 and not rospy.is_shutdown():
+            rospy.loginfo(f'Waiting for {self.anemometer_topic}')
             rospy.sleep(0.1)
         
         # init gas_sensor sub
         self.gas_sensor_sub = rospy.Subscriber(self.gas_sensor_topic, GasSensor, self.gas_sensor_cb, queue_size=2)
-        while self.raw_gas is None and not rospy.is_shutdown():
-            rospy.loginfo(f'Waiting for {str(self.gas_sensor_sub.resolved_name)}')
+        while len(self.raw_gas) == 0 and not rospy.is_shutdown():
+            rospy.loginfo(f'Waiting for {self.gas_sensor_topic}')
             rospy.sleep(0.1)
         
         # init move base action client
@@ -102,9 +102,6 @@ class RobotClient():
         return self.pose
     
     def update_real_pose(self):
-        while self.raw_real_pose is None:
-            rospy.loginfo(f'Waiting for robot real pose')
-            rospy.sleep(0.1)
         self.real_pose = copy.deepcopy(self.raw_real_pose)
         self.real_x = self.real_pose.pose.pose.position.x
         self.real_y = self.real_pose.pose.pose.position.y
@@ -119,33 +116,26 @@ class RobotClient():
     def real_pose_cb(self, pose:Odometry):
         self.raw_real_pose = pose
         
-    def update_anemoter(self):
-        while len(self.raw_anemoter) < 1:
-            rospy.loginfo(f'Waiting for anemoter data')
-            rospy.sleep(0.1)
-        anemoter = copy.deepcopy(self.raw_anemoter)
-        wd_x = [math.cos(item.wind_direction) for item in anemoter]
-        wd_y = [math.sin(item.wind_direction) for item in anemoter]
+    def update_anemometer(self):
+        anemometer = copy.deepcopy(self.raw_anemometer)
+        wd_x = [math.cos(item.wind_direction) for item in anemometer]
+        wd_y = [math.sin(item.wind_direction) for item in anemometer]
         self.wind_direction = math.atan2(sum(wd_y), sum(wd_x))
-        self.wind_speed = sum([item.wind_speed for item in anemoter]) / len(anemoter)
-        rospy.loginfo(f'Anemoter data: direction {self.wind_direction:.2f} speed {self.wind_speed:.2f}')
+        self.wind_speed = sum([item.wind_speed for item in anemometer]) / len(anemometer)
+        rospy.loginfo(f'Anemometer data: direction {self.wind_direction:.2f} speed {self.wind_speed:.2f}')
     
-    def anemoter_cb(self, anemoter_data:Anemoter):
-        self.raw_anemoter.append(anemoter_data)
-        while len(self.raw_anemoter) > self.sensor_window:
-            self.raw_anemoter.pop(0)
+    def anemometer_cb(self, anemometer_data:Anemometer):
+        self.raw_anemometer.append(anemometer_data)
+        while len(self.raw_anemometer) > self.sensor_window:
+            self.raw_anemometer.pop(0)
     
     def update_gas(self):
-        while len(self.raw_gas) < 1:
-            rospy.loginfo(f'Waiting for gas sensor data')
-            rospy.sleep(0.1)
         gas_data = copy.deepcopy(self.raw_gas)
         self.gas = sum(gas_data) / len(gas_data)
         rospy.loginfo(f'Gas sensor data: {self.gas:.2f}')
     
     def gas_sensor_cb(self, gas_data:GasSensor):
         self.raw_gas.append(gas_data.raw)
-        # print('raw gas', self.raw_gas)
         while len(self.raw_gas) > self.sensor_window:
             self.raw_gas.pop(0)
     

@@ -27,49 +27,53 @@ class Frontier_Node():
         self.y = y
 
 class Frontier():
-    def __init__(self, obs_th=0, uk_th=3, obs_r=0.20):
-        self.obs_th = obs_th
-        self.uk_th = uk_th
+    def __init__(self, obs_r=0.20):
         self.obs_r = obs_r
         self.FREE = 0
         self.UNKNOWN = -1
-        self.OBS = 1
-
+    
     def find(self, map_client:MapClient, mx, my):
         obs_r = round(self.obs_r / map_client.resolution)
-        frontiers_raw:List[Frontier_Node] = []
-        open_set = []
-        close_set = []
-        gy, gx = map_client.get_costmap_x_y(mx, my)
-        open_set.append((gx, gy))
-        while True:
-            if len(open_set) == 0:
-                break
-            node = open_set.pop(0)
-            close_set.append(node)
-            if node[0] == 0 or node[0] + 1 == map_client.height or node[1] == 0 or node[1] + 1 == map_client.width:
+        frontiers:List[Frontier_Node] = []
+        q = []
+        visited = [[False for _ in range(map_client.height)] for _ in range(map_client.width)]
+        
+        dx = [0, 1, 0, -1]
+        dy = [1, 0, -1, 0]
+        
+        sx, sy = map_client.get_costmap_x_y(mx, my)
+        q.append((sx, sy))
+        visited[sx][sy] = True
+        
+        while not len(q) == 0:
+            node = q.pop(0)
+            if node[0] < 0 or node[0] >= map_client.width or node[1] < 0 or node[1] >= map_client.height:
+                continue
+            if map_client.get_cost_from_costmap_x_y(node[0], node[1]) == self.UNKNOWN:
                 continue
             xmin = max(0, node[0] - obs_r)
-            xmax = min(map_client.height - 1, node[0] + obs_r)
+            xmax = min(map_client.width, node[0] + obs_r)
             ymin = max(0, node[1] - obs_r)
-            ymax = min(map_client.width - 1, node[1] + obs_r)
-            data = map_client.grid_data[xmin:xmax+1, ymin:ymax+1]
+            ymax = min(map_client.height, node[1] + obs_r)
+            data = map_client.grid_data[ymin:ymax, xmin:xmax]
             if np.amax(data) > self.FREE:
                 continue
-            if map_client.grid_data[node[0], node[1]] == self.UNKNOWN:
-                continue
-            hood = map_client.grid_data[node[0] - 1: node[0] + 2, node[1] - 1: node[1] + 2]
-            if np.count_nonzero(hood == self.OBS) <= self.obs_th and np.count_nonzero(hood == self.UNKNOWN) >= self.uk_th:
-                frontiers_raw.append(Frontier_Node(node[0], node[1]))
-            for pnode in [(node[0]-1, node[1]), (node[0]+1, node[1]), (node[0], node[1]-1), (node[0], node[1]+1)]:
-                if pnode in close_set:
+            
+            for i in range(4):
+                nx, ny = node[0] + dx[i], node[1] + dy[i]
+                if nx < 0 or nx >= map_client.width or ny < 0 or ny >= map_client.height:
                     continue
-                if pnode not in open_set:
-                    open_set.append(pnode)
-        for node in frontiers_raw:
-            node.x, node.y = map_client.get_world_x_y(node.y, node.x)
-        rospy.loginfo(f'Find frontiers: raw size {len(frontiers_raw)}')
-        return frontiers_raw
+                if not visited[nx][ny]:
+                    visited[nx][ny] = True
+                    if map_client.get_cost_from_costmap_x_y(nx, ny) == self.UNKNOWN:
+                        frontiers.append(Frontier_Node(node[0], node[1]))
+                    elif map_client.get_cost_from_costmap_x_y(nx, ny) == self.FREE:
+                        q.append((nx, ny))
+                    
+        for node in frontiers:
+            node.x, node.y = map_client.get_world_x_y(node.x, node.y)
+        rospy.loginfo(f'Find frontiers: raw size {len(frontiers)}')
+        return frontiers
 
 class RRT_Node():
     def __init__(self, x, y, cost=0.0, parent_ind=None):
@@ -87,6 +91,7 @@ class RRT_Sample():
         self.path_res = path_resolution
         self.obs_r = obs_r
         self.near_r = near_r
+        self.FREE = 0
 
     def steer(self, to_node:RRT_Node, from_node:RRT_Node):
         path_theta = math.atan2(to_node.y - from_node.y, to_node.x - from_node.x)
@@ -109,16 +114,16 @@ class RRT_Sample():
         path_x.append(to_node.x)
         path_y.append(to_node.y)
         for i in range(len(path_x)):
-            y, x = map_client.get_costmap_x_y(path_x[i], path_y[i])
+            x, y = map_client.get_costmap_x_y(path_x[i], path_y[i])
             obs_r = int(round(self.obs_r / map_client.resolution))
             xmin = int(max(0, x - obs_r))
-            xmax = int(min(map_client.grid_data.shape[0] - 1, x + obs_r))
+            xmax = int(min(map_client.width, x + obs_r))
             ymin = int(max(0, y - obs_r))
-            ymax = int(min(map_client.grid_data.shape[1] - 1, y + obs_r))
-            data = map_client.grid_data[xmin:xmax+1, ymin:ymax+1]
-            if np.amax(data) >= 1:
+            ymax = int(min(map_client.height, y + obs_r))
+            data = map_client.grid_data[ymin:ymax, xmin:xmax]
+            if np.amax(data) > self.FREE:
                 return False
-            if np.amin(data) <= -1:
+            if np.amin(data) < self.FREE:
                 return False
         return True
     
@@ -175,7 +180,7 @@ class Goal_Node():
             
 class Banana():
     def __init__(self, mc:MapClient, rc:RobotClient, params):
-        self.iter_ind = None
+        self.iteration = None
         self.mc = mc
         self.rc = rc
         self.params = params
@@ -200,6 +205,8 @@ class Banana():
         self.G_dws:List[Goal_Node] = []
         self.G_ups:List[Goal_Node] = []
         self.G_dws_last:List[RRT_Node] = []
+        self.rrt_nodes_raw:List[RRT_Node] = []
+        self.frontiers_raw:List[Frontier_Node] = []
         rospy.loginfo(f'Agent initialized')
         
         self.cal_start_time = None
@@ -207,8 +214,6 @@ class Banana():
         self.data_log = []
         self.data_log_map = []
         self.data_targets = []
-        self.rrt_nodes_raw:List[RRT_Node] = []
-        self.frontiers_raw:List[Frontier_Node] = []
         self.data_rrt_nodes = []
         self.data_frontiers = []
         
@@ -250,13 +255,13 @@ class Banana():
             rospy.loginfo(f'Reach target: index {ind} x {lst[ind].x:.2f} y {lst[ind].y:.2f}, del')
             del lst[ind]
     
-    def observe(self, it):
-        self.iter_ind = it
+    def observe(self, itration):
+        self.iteration = itration
         # get measures
         self.mc.update_grid_map()
         self.rc.update_pose()
         self.rc.update_real_pose()
-        self.rc.update_anemoter()
+        self.rc.update_anemometer()
         self.rc.update_gas()
         
         self.cal_start_time = timer()
@@ -294,14 +299,16 @@ class Banana():
         rospy.loginfo(f'Reach goal {self.check_reach_goal(self.goal.x, self.goal.y)} Sample {self.do_sample}')
         rospy.loginfo(f'Set size: G_ups {len(self.G_ups)} G_dws {len(self.G_dws)} G_epr {len(self.G_epr)}')
     
-    def rrt_sample_goal(self):
+    def rrt_sample(self):
         node_list_raw = self.rrt_client.sample(self.mc, self.rc.x, self.rc.y)
         node_list = []
         for node in node_list_raw:
             do_append = True
+            # delete nodes that are very close to the robot
             if math.hypot(node.x - self.rc.x, node.y - self.rc.y) < self.rrt_min_r:
                 do_append = False
                 continue
+            # delete the nodes that was last sampled when the robot was in the Downstreaming state
             if self.state == self.state_dws and len(self.G_dws_last) > 0:
                 for item in self.G_dws_last:
                     if math.hypot(node.x - item.x, node.y - item.y) < self.reach_waypoint_dis_th:
@@ -318,13 +325,13 @@ class Banana():
         # Eq. (5)
         if self.state == self.state_ups or self.state == self.state_btk:
             if self.do_sample:
-                self.G_ups = self.rrt_sample_goal()
+                self.G_ups = self.rrt_sample()
             for node in self.G_ups:
                 node.u = self.sigma * node.u + self.probability(node.x, node.y)
         # Eq. (9)
         if self.state == self.state_dws:
             if self.do_sample:
-                self.G_dws = self.G_dws + self.rrt_sample_goal()
+                self.G_dws = self.G_dws + self.rrt_sample()
             if len(self.G_dws) == 0:
                 return
             j1_pro = [self.probability(item.x, item.y) for item in self.G_dws]
@@ -344,6 +351,7 @@ class Banana():
         rospy.loginfo(f'Set size: G_ups {len(self.G_ups)} G_dws {len(self.G_dws)} G_epr {len(self.G_epr)}')
     
     def generate_ramdom_goal(self):
+        MAP_FREE = 0
         while True:
             random_theta = random.random() * math.pi * 2 - math.pi
             random_r = random.random() * self.rrt_max_r
@@ -352,7 +360,7 @@ class Banana():
             node_x, node_y = self.mc.get_costmap_x_y(x, y)
             if not (0 <= node_x < self.mc.width and 0 <= node_y < self.mc.height):
                 continue
-            if self.mc.grid_data[node_y, node_x] < 0 or self.mc.grid_data[node_y, node_x] > 0:
+            if not self.mc.get_cost_from_costmap_x_y(node_x, node_y) == MAP_FREE:
                 continue
             return Goal_Node(x, y)
     
@@ -399,7 +407,7 @@ class Banana():
         text.text_size = 25
         text.line_width = 1
         t = dedent(f'''
-                    Iteration: {self.iter_ind}
+                    Iteration: {self.iteration}
                     Robot state: {self.state}
                     Valid airflow measure: {str(self.wind_hit)}
                     Valid concentration measure: {str(self.gas_hit)}
@@ -536,7 +544,7 @@ class Banana():
         #                     'robot_real_x', 'robot_real_y', 'robot_real_z', 'robot_real_yaw',
         #                     'gas', 'gas_hit', 'wind_speed', 'wind_hit', 'wind_dir',
         #                     'source_x', 'source_y', 'sample', 'G_ups_size', 'G_dws_size', 'G_epr_size']
-        self.data_log.append([self.iter_ind, rospy.get_time(), self.state, self.cal_start_time, self.cal_end_time,
+        self.data_log.append([self.iteration, rospy.get_time(), self.state, self.cal_start_time, self.cal_end_time,
                               self.goal.x, self.goal.y, self.goal.yaw,
                               self.rc.x, self.rc.y, self.rc.z, self.rc.yaw,
                               self.rc.real_x, self.rc.real_y, self.rc.real_z, self.rc.real_yaw,
@@ -544,15 +552,15 @@ class Banana():
                               self.params['source_x'], self.params['source_y'], self.do_sample,
                               len(self.G_ups), len(self.G_dws), len(self.G_epr)])
         self.data_log_map.append(deepcopy(self.mc.raw_grid_data))
-        targets_2 = [(self.iter_ind, 2, item.x, item.y, item.yaw, item.u) for item in self.G_ups]
-        targets_1 = [(self.iter_ind, 1, item.x, item.y, item.yaw, item.u) for item in self.G_dws]
-        targets_0 = [(self.iter_ind, 0, item.x, item.y, item.yaw, item.u) for item in self.G_epr]
+        targets_2 = [(self.iteration, 2, item.x, item.y, item.yaw, item.u) for item in self.G_ups]
+        targets_1 = [(self.iteration, 1, item.x, item.y, item.yaw, item.u) for item in self.G_dws]
+        targets_0 = [(self.iteration, 0, item.x, item.y, item.yaw, item.u) for item in self.G_epr]
         self.data_targets = self.data_targets + targets_2 + targets_1 + targets_0
-        frontiers_lst = [(self.iter_ind, item.x, item.y) for item in self.frontiers_raw]
+        frontiers_lst = [(self.iteration, item.x, item.y) for item in self.frontiers_raw]
         self.data_frontiers = self.data_frontiers + frontiers_lst
-        rrt_nodes_lst = [(self.iter_ind, ind, item.x, item.y, item.parent, item.cost) for ind, item in enumerate(self.rrt_nodes_raw)]
+        rrt_nodes_lst = [(self.iteration, ind, item.x, item.y, item.parent, item.cost) for ind, item in enumerate(self.rrt_nodes_raw)]
         self.data_rrt_nodes = self.data_rrt_nodes + rrt_nodes_lst
-        rospy.loginfo(f'Iter {self.iter_ind} cost time {self.cal_end_time - self.cal_start_time:.5f}')
+        rospy.loginfo(f'Iter {self.iteration} cost time {self.cal_end_time - self.cal_start_time:.5f}')
     
     def save_data(self, file_path):
         data_log_header = ['it', 'ros_time', 'state', 'cal_start_time', 'cal_end_time', 

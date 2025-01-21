@@ -23,7 +23,7 @@ class MapClient():
         # init map subscriber
         self.map_sub = rospy.Subscriber(map_topic, OccupancyGrid, self.map_cb, queue_size=3)
         while self.raw_grid_data is None and self.grid_data is None and not rospy.is_shutdown():
-            rospy.loginfo(f'Waiting for {str(self.map_sub.resolved_name)}')
+            rospy.loginfo(f'Waiting for {map_topic}')
             rospy.sleep(0.1)
         rospy.loginfo(f'Map client initialized')
         self.update_grid_map()
@@ -62,7 +62,6 @@ class MapClient():
 
     def get_cost_from_costmap_x_y(self, x, y):
         if self.is_in_gridmap(x, y):
-            # data comes in row-major order http://docs.ros.org/en/melodic/api/nav_msgs/html/msg/OccupancyGrid.html
             # first index is the row, second index the column
             return self.grid_data[y][x]
         else:
@@ -74,15 +73,4 @@ class MapClient():
             return True
         else:
             return False
-        
-    def get_max_cost_r(self, mx, my, mr):
-        r = round(mr / self.resolution)
-        x, y = self.get_costmap_x_y(mx, my)
-        xmin = max(0, x - r)
-        xmax = min(self.grid_data.shape[1] - 1, x + r)
-        ymin = max(0, y - r)
-        ymax = min(self.grid_data.shape[0] - 1, y + r)
-        # print(mx, my, mr, x, y, r, xmin ,xmax, ymin, ymax)
-        data = self.grid_data[ymin:ymax+1, xmin:xmax+1]
-        return np.amax(data)
         
