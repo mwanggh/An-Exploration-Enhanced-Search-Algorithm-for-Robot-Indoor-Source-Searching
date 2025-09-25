@@ -176,7 +176,6 @@ class Goal_Node():
         self.x = x
         self.y = y
         self.yaw = yaw
-        # self.do_sample = do_sample
         self.u = u
             
 class Banana():
@@ -209,6 +208,11 @@ class Banana():
         self.rrt_nodes_raw:List[RRT_Node] = []
         self.frontiers_raw:List[Frontier_Node] = []
         rospy.loginfo(f'Agent initialized')
+        
+        self.robot_stuck_pose = None
+        self.robot_stuck_last_time = rospy.get_time()
+        self.robot_stuck_max_duration = 5.0
+        self.robot_stuck_dis_th = 0.3
         
         self.cal_start_time = None
         self.cal_end_time = None
@@ -366,6 +370,20 @@ class Banana():
             return Goal_Node(x, y)
     
     def evaluate(self):
+        if self.robot_stuck_pose is None:
+            self.robot_stuck_pose = (self.rc.real_x, self.rc.real_y)
+            self.robot_stuck_last_time = rospy.get_time()
+        else:
+            dis = math.sqrt(abs(self.robot_stuck_pose[0] - self.rc.real_x)**2 + abs(self.robot_stuck_pose[1] - self.rc.real_y)**2)
+            if dis > self.robot_stuck_dis_th:
+                self.robot_stuck_pose = (self.rc.real_x, self.rc.real_y)
+                self.robot_stuck_last_time = rospy.get_time()
+        robot_stuck_d = rospy.get_time() - self.robot_stuck_last_time
+        if robot_stuck_d > self.robot_stuck_max_duration:
+            rospy.loginfo(f'Robot Stuck -> Set random goal')
+            self.goal = self.generate_ramdom_goal()
+            return
+        
         if self.state == self.state_ups or self.state == self.state_btk:
             if not len(self.G_ups) == 0:
                 # Eq. (6)
